@@ -1,0 +1,298 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="fw-bold">
+        Welcome back, {{ current_user.username }} 👋
+    </h2>
+    <p class="text-muted">
+        Smart Attendance & Workforce Analytics Dashboard
+    </p>
+</div>
+
+<!-- ================= Statistics ================= -->
+
+<div class="row g-4">
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-users fa-2x text-primary mb-2"></i>
+                <h6>Total Employees</h6>
+                <h2>{{ total_employees }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-building fa-2x text-success mb-2"></i>
+                <h6>Departments</h6>
+                <h2>{{ total_departments }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-user-check fa-2x text-success mb-2"></i>
+                <h6>Active</h6>
+                <h2>{{ active_employees }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-user-xmark fa-2x text-danger mb-2"></i>
+                <h6>Inactive</h6>
+                <h2>{{ inactive_employees }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-calendar-check fa-2x text-info mb-2"></i>
+                <h6>Present</h6>
+                <h2>{{ present_today }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2 col-md-4">
+        <div class="card shadow-sm border-0 text-center">
+            <div class="card-body">
+                <i class="fa-solid fa-calendar-xmark fa-2x text-warning mb-2"></i>
+                <h6>Absent</h6>
+                <h2>{{ absent_today }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= Charts ================= -->
+
+<div class="row mt-4">
+
+    <!-- Attendance Chart -->
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Today's Attendance Overview
+            </div>
+            <div class="card-body">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Chart -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                Employees Per Department
+            </div>
+            <div class="card-body">
+                <canvas id="departmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= Employee Table ================= -->
+
+<div class="row mt-4">
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                Employee Statistics
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Total Employees</th>
+                        <td>{{ total_employees }}</td>
+                    </tr>
+                    <tr>
+                        <th>Active Employees</th>
+                        <td>{{ active_employees }}</td>
+                    </tr>
+                    <tr>
+                        <th>Inactive Employees</th>
+                        <td>{{ inactive_employees }}</td>
+                    </tr>
+                    <tr>
+                        <th>Today's Date</th>
+                        <td>{{ today }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                Department Summary
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Department</th>
+                            <th>Total Employees</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in department_summary %}
+                        <tr>
+                            <td>{{ item[0] }}</td>
+                            <td>{{ item[1] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= Recent Attendance ================= -->
+
+<div class="card shadow-sm mt-4">
+
+    <div class="card-header bg-dark text-white">
+        Recent Attendance
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-striped table-hover">
+
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+            {% if recent_attendance %}
+
+                {% for attendance in recent_attendance %}
+                <tr>
+                    <td>{{ attendance.employee.first_name }} {{ attendance.employee.last_name }}</td>
+                    <td>{{ attendance.date }}</td>
+                    <td>
+                        {% if attendance.status == "Present" %}
+                            <span class="badge bg-success">Present</span>
+                        {% elif attendance.status == "Late" %}
+                            <span class="badge bg-warning text-dark">Late</span>
+                        {% else %}
+                            <span class="badge bg-danger">Absent</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+            {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted">
+                        No attendance records found.
+                    </td>
+                </tr>
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+
+const attendanceCanvas = document.getElementById("attendanceChart");
+
+if (attendanceCanvas) {
+
+    new Chart(attendanceCanvas, {
+        type: "bar",
+        data: {
+            labels: ["Present", "Absent"],
+            datasets: [{
+                data: [
+                    Number("{{ present_today | default(0) }}"),
+                    Number("{{ absent_today | default(0) }}")
+                ],
+                backgroundColor: ["#198754", "#dc3545"]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+
+}
+
+const departmentCanvas = document.getElementById("departmentChart");
+
+if (departmentCanvas) {
+
+    const labels = [
+        {% for item in department_summary %}
+        "{{ item[0] }}"{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    const values = [
+        {% for item in department_summary %}
+        {{ item[1] }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    ];
+
+    if (labels.length > 0) {
+
+        new Chart(departmentCanvas, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: "#0d6efd"
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+    }
+
+}
+
+</script>
+
+{% endblock %}

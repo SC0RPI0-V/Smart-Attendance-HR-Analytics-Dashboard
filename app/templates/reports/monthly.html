@@ -1,0 +1,214 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Monthly Report{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold">
+            <i class="fa-solid fa-calendar-days text-primary"></i>
+            Monthly Attendance Report
+        </h2>
+        <p class="text-muted">Analyze employee attendance for a selected month.</p>
+    </div>
+
+    <a href="{{ url_for('reports.index') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i> Back
+    </a>
+
+</div>
+
+<!-- FILTER -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="GET">
+            <div class="row align-items-end">
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Select Month</label>
+                    <input type="month"
+                           class="form-control"
+                           name="month"
+                           value="{{ selected_month or '' }}">
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100">
+                        <i class="fa-solid fa-filter"></i> Filter
+                    </button>
+                </div>
+
+                <div class="col-md-3">
+                    <a href="{{ url_for('reports.monthly') }}"
+                       class="btn btn-outline-secondary w-100">
+                        Reset
+                    </a>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-success w-100" onclick="exportCSV()">
+                        <i class="fa-solid fa-file-csv"></i> Export CSV
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="row g-4 mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Total Records</h6>
+                <h2>{{ total_records or 0 }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Present</h6>
+                <h2 class="text-success">{{ present or 0 }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Late</h6>
+                <h2 class="text-warning">{{ late or 0 }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <h6>Absent</h6>
+                <h2 class="text-danger">{{ absent or 0 }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ATTENDANCE % -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+        <h5 class="fw-bold">Overall Attendance Percentage</h5>
+        <h1 class="display-5 text-success">
+            {{ attendance_percentage or 0 }}%
+        </h1>
+    </div>
+</div>
+
+<!-- CHART -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+        Monthly Attendance Distribution
+    </div>
+    <div class="card-body">
+        <canvas id="monthlyChart" height="120"></canvas>
+    </div>
+</div>
+
+<!-- TABLE -->
+<div class="card shadow-sm">
+    <div class="card-header bg-dark text-white">
+        Attendance History
+    </div>
+
+    <div class="card-body p-0">
+
+        <table class="table table-hover mb-0">
+
+            <thead class="table-light">
+                <tr>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% if attendance and attendance|length > 0 %}
+
+                    {% for record in attendance %}
+
+                    <tr>
+                        <td>
+                            {{ record.employee.first_name }} {{ record.employee.last_name }}
+                        </td>
+
+                        <td>{{ record.date }}</td>
+
+                        <td>
+                            {% if record.status == "Present" %}
+                                <span class="badge bg-success">Present</span>
+
+                            {% elif record.status == "Late" %}
+                                <span class="badge bg-warning text-dark">Late</span>
+
+                            {% else %}
+                                <span class="badge bg-danger">Absent</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="3" class="text-center p-4 text-muted">
+                            No attendance records found for this month.
+                        </td>
+                    </tr>
+
+                {% endif %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- CHART JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+const present = Number("{{ present or 0 }}");
+const late = Number("{{ late or 0 }}");
+const absent = Number("{{ absent or 0 }}");
+
+new Chart(document.getElementById("monthlyChart"), {
+    type: "bar",
+    data: {
+        labels: ["Present", "Late", "Absent"],
+        datasets: [{
+            data: [present, late, absent],
+            backgroundColor: ["#198754", "#ffc107", "#dc3545"]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false }
+        }
+    }
+});
+
+function exportCSV() {
+    alert("Export feature will be connected to backend endpoint.");
+}
+</script>
+
+{% endblock %}

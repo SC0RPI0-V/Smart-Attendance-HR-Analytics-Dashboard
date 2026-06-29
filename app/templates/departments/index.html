@@ -1,0 +1,92 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Departments{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold">
+            <i class="fa-solid fa-building text-primary"></i>
+            Departments
+        </h2>
+
+        <p class="text-muted">
+            Manage all company departments.
+        </p>
+    </div>
+
+</div>
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-primary text-white">
+
+        Department List
+
+    </div>
+
+    <div class="card-body">
+
+        <table class="table table-hover table-striped">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Department</th>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Employees</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% if departments %}
+
+                {% for department in departments %}
+
+                <tr>
+
+                    <td>{{ department.id }}</td>
+
+                    <td>{{ department.department_name }}</td>
+
+                    <td>{{ department.department_code }}</td>
+
+                    <td>{{ department.description }}</td>
+
+                    <td>{{ department.employees|length }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="text-center text-muted">
+
+                        No departments found.
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center">
+
+        <h5 class="fw-bold">
+            Overall Attendance
+        </h5>
+
+        <h1 class="display-3 text-success">
+            {{ overall_percentage }}%
+        </h1>
+
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h5>Total Records</h5>
+            <h2>{{ total_records }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h5>Present</h5>
+            <h2>{{ present }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h5>Late</h5>
+            <h2>{{ late }}</h2>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center p-3">
+            <h5>Absent</h5>
+            <h2>{{ absent }}</h2>
+        </div>
+    </div>
+
+</div>
+
+
+<h2 class="mb-4">Reports Dashboard</h2>
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <i class="fa-solid fa-calendar-days fa-3x text-primary mb-3"></i>
+
+                <h4>Monthly Reports</h4>
+
+                <a href="{{ url_for('reports.monthly') }}"
+                   class="btn btn-primary mt-3">
+                    Open
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <div class="card shadow">
+
+            <div class="card-body text-center">
+
+                <i class="fa-solid fa-chart-line fa-3x text-success mb-3"></i>
+
+                <h4>Yearly Reports</h4>
+
+                <a href="{{ url_for('reports.yearly') }}"
+                   class="btn btn-success mt-3">
+                    Open
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,146 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Mark Attendance{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>
+        <i class="fa-solid fa-calendar-check text-success"></i>
+        Mark Attendance
+    </h2>
+
+    <a href="{{ url_for('attendance.index') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Attendance History
+    </a>
+
+</div>
+
+<div class="card shadow border-0">
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            <div class="row mb-4">
+
+                <div class="col-md-4">
+
+                    <label class="form-label fw-bold">
+                        Attendance Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="attendance_date"
+                        class="form-control"
+                        value="{{ today }}"
+                        required>
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th width="8%">#</th>
+
+                            <th>Employee Code</th>
+
+                            <th>Employee Name</th>
+
+                            <th>Department</th>
+
+                            <th width="220">Attendance Status</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for emp in employees %}
+
+                        <tr>
+
+                            <td>{{ loop.index }}</td>
+
+                            <td>{{ emp.employee_code }}</td>
+
+                            <td>
+
+                                <strong>
+                                    {{ emp.first_name }} {{ emp.last_name }}
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                {% if emp.department %}
+                                    {{ emp.department.department_name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <select
+                                    class="form-select"
+                                    name="status_{{ emp.id }}">
+
+                                    <option value="Present" selected>
+                                        ✅ Present
+                                    </option>
+
+                                    <option value="Late">
+                                        🟡 Late
+                                    </option>
+
+                                    <option value="Absent">
+                                        ❌ Absent
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="text-end mt-4">
+
+                <button type="submit" class="btn btn-success btn-lg">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Save Attendance
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

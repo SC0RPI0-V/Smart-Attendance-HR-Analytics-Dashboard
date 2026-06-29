@@ -1,0 +1,149 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Yearly Report{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="fw-bold">Yearly Attendance Report</h2>
+        <p class="text-muted">
+            Employee attendance percentage for each month
+        </p>
+    </div>
+
+    <a href="{{ url_for('reports.index') }}" class="btn btn-secondary">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back
+    </a>
+
+</div>
+
+
+<form method="GET" class="row mb-4">
+
+    <div class="col-md-3">
+
+        <label class="form-label">Year</label>
+
+        <input
+            type="number"
+            class="form-control"
+            name="year"
+            value="{{ year }}"
+        >
+
+    </div>
+
+    <div class="col-md-2 d-flex align-items-end">
+
+        <button class="btn btn-primary w-100">
+
+            <i class="fa-solid fa-filter"></i>
+
+            Filter
+
+        </button>
+
+    </div>
+
+</form>
+
+
+<div class="card shadow">
+
+    <div class="card-header bg-success text-white">
+
+        Yearly Attendance Summary
+
+    </div>
+
+    <div class="card-body table-responsive">
+
+        <table class="table table-bordered table-hover align-middle">
+
+            <thead class="table-dark">
+
+            <tr>
+
+                <th>Employee</th>
+
+                <th>Jan</th>
+                <th>Feb</th>
+                <th>Mar</th>
+                <th>Apr</th>
+                <th>May</th>
+                <th>Jun</th>
+                <th>Jul</th>
+                <th>Aug</th>
+                <th>Sep</th>
+                <th>Oct</th>
+                <th>Nov</th>
+                <th>Dec</th>
+
+                <th>Average</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for row in report %}
+
+            <tr>
+
+                <td>
+
+                    {{ row.employee.first_name }}
+
+                    {{ row.employee.last_name }}
+
+                </td>
+
+                {% for value in row.months %}
+
+                <td>
+
+                    {{ value }}%
+
+                </td>
+
+                {% endfor %}
+
+                <td>
+
+                    {% if row.average >= 90 %}
+
+                        <span class="badge bg-success">
+
+                    {% elif row.average >= 75 %}
+
+                        <span class="badge bg-warning text-dark">
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+
+                    {% endif %}
+
+                    {{ row.average }}%
+
+                    </span>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

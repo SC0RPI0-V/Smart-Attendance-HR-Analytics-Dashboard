@@ -1,0 +1,127 @@
+```html
+{% extends "layouts/base.html" %}
+
+{% block title %}
+Employee Details
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h3>
+
+                {{ employee.first_name }}
+                {{ employee.last_name }}
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <tr>
+                    <th width="250">Employee Code</th>
+                    <td>{{ employee.employee_code }}</td>
+                </tr>
+
+                <tr>
+                    <th>First Name</th>
+                    <td>{{ employee.first_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Last Name</th>
+                    <td>{{ employee.last_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Email</th>
+                    <td>{{ employee.email }}</td>
+                </tr>
+
+                <tr>
+                    <th>Phone</th>
+                    <td>{{ employee.phone }}</td>
+                </tr>
+
+                <tr>
+                    <th>Gender</th>
+                    <td>{{ employee.gender }}</td>
+                </tr>
+
+                <tr>
+                    <th>Department</th>
+                    <td>{{ employee.department.department_name }}</td>
+                </tr>
+
+                <tr>
+                    <th>Designation</th>
+                    <td>{{ employee.designation }}</td>
+                </tr>
+
+                <tr>
+                    <th>Joining Date</th>
+                    <td>{{ employee.joining_date }}</td>
+                </tr>
+
+                <tr>
+                    <th>Salary</th>
+                    <td>₹ {{ employee.salary }}</td>
+                </tr>
+
+                <tr>
+                    <th>Status</th>
+                    <td>
+
+                        {% if employee.status=="Active" %}
+
+                        <span class="badge bg-success">
+
+                            Active
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-danger">
+
+                            Inactive
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+                </tr>
+
+            </table>
+
+            <a href="{{ url_for('employees.edit_employee', id=employee.id) }}"
+               class="btn btn-warning">
+
+                Edit
+
+            </a>
+
+            <a href="{{ url_for('employees.index') }}"
+               class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+```
